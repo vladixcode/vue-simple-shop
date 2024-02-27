@@ -12,21 +12,34 @@
           <router-link to="/cart">Cart</router-link>
           <base-badge mode="elegant">{{ cart.qty }}</base-badge>
         </li>
-        <li v-if="isLoggedIn">
+        <li v-if="isUserLoggedIn">
           <router-link to="/admin">Admin</router-link>
         </li>
       </ul>
     </nav>
     <div>
-      <button v-if="!isLoggedIn" @click="login">Login</button>
-      <button v-if="isLoggedIn" @click="logout">Logout</button>
+      <button v-if="!isUserLoggedIn" @click="login">Login</button>
+      <button v-if="isUserLoggedIn" @click="logout">Logout</button>
     </div>
   </header>
 </template>
 
 <script>
 export default {
-  inject: ['isLoggedIn', 'login', 'logout', 'cart'],
+  inject: ['cart'],
+  computed: {
+    isUserLoggedIn() {
+      return this.$store.getters.isLoggedIn
+    },
+  },
+  methods: {
+    login() {
+      this.$store.dispatch('login')
+    },
+    logout() {
+      this.$store.dispatch('logout')
+    },
+  },
 }
 </script>
 

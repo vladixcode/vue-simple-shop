@@ -1,30 +1,107 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" />
+  <the-header></the-header>
+  <router-view></router-view>
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+<script>
+import TheHeader from './components/nav/TheHeader.vue'
+
+export default {
+  components: {
+    TheHeader,
+  },
+  provide() {
+    return {
+      isLoggedIn: this.isLoggedIn,
+      products: this.products,
+      cart: this.cart,
+      addProductToCart: this.addProductToCart,
+      removeProductFromCart: this.removeProductFromCart,
+      login: this.login,
+      logout: this.logout,
+    }
+  },
+  data() {
+    return {
+      isLoggedIn: false,
+      products: [
+        {
+          id: 'p1',
+          image:
+            'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Books_HD_%288314929977%29.jpg/640px-Books_HD_%288314929977%29.jpg',
+          title: 'Book Collection',
+          description: 'A collection of must-read books. All-time classics included!',
+          price: 99.99,
+        },
+        {
+          id: 'p2',
+          image:
+            'https://alpkit.com/cdn/shop/products/zhota-action1.jpg?crop=center&height=800&v=1695745243&width=1440',
+          title: 'Mountain Tent',
+          description: 'A tent for the ambitious outdoor tourist.',
+          price: 129.99,
+        },
+        {
+          id: 'p3',
+          image:
+            'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/640px-Good_Food_Display_-_NCI_Visuals_Online.jpg',
+          title: 'Food Box',
+          description: 'May be partially expired when it arrives but at least it is cheap!',
+          price: 6.99,
+        },
+      ],
+      cart: { items: [], total: 0, qty: 0 },
+    }
+  },
+  methods: {
+    addProductToCart(productData) {
+      const productInCartIndex = this.cart.items.findIndex((ci) => ci.productId === productData.id)
+
+      if (productInCartIndex >= 0) {
+        this.cart.items[productInCartIndex].qty++
+      } else {
+        const newItem = {
+          productId: productData.id,
+          title: productData.title,
+          image: productData.image,
+          price: productData.price,
+          qty: 1,
+        }
+        this.cart.items.push(newItem)
+      }
+      this.cart.qty++
+      this.cart.total += productData.price
+    },
+
+    removeProductFromCart(prodId) {
+      const productInCartIndex = this.cart.items.findIndex(
+        (cartItem) => cartItem.productId === prodId,
+      )
+      const prodData = this.cart.items[productInCartIndex]
+      this.cart.items.splice(productInCartIndex, 1)
+      this.cart.qty -= prodData.qty
+      this.cart.total -= prodData.price * prodData.qty
+    },
+    login() {
+      this.isLoggedIn = true
+    },
+    logout() {
+      this.isLoggedIn = false
+    },
+  },
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+</script>
+
+<style>
+* {
+  box-sizing: border-box;
 }
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+
+html {
+  font-family: sans-serif;
+}
+
+body {
+  margin: 0;
 }
 </style>

@@ -6,7 +6,7 @@
     </h3>
     <ul>
       <cart-item
-        v-for="item in cart.items"
+        v-for="item in cartItems"
         :key="item.productId"
         :prod-id="item.productId"
         :title="item.title"
@@ -25,10 +25,12 @@ export default {
   components: {
     CartItem,
   },
-  inject: ['cart'],
   computed: {
     cartTotal() {
-      return this.cart.total.toFixed(2)
+      return this.$store.getters['cart/total']
+    },
+    cartItems() {
+      return this.$store.getters['cart/items']
     },
   },
 }

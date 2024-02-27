@@ -20,7 +20,11 @@ const cartStore = {
   },
   actions: {
     addToCart(context, payload) {
-      context.commit('addProductToCart', payload)
+      const productId = payload.id
+      const product = context.rootGetters['product/products'].find(
+        (product) => product.id === productId,
+      )
+      context.commit('addProductToCart', product)
     },
     removeFromCart(context, payload) {
       context.commit('removeProductFromCart', payload)
